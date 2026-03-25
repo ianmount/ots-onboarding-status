@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OTS & Onboarding Report | March 24, 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1f2e 0%, #252b3b 100%);
+      border-bottom: 2px solid #3b82f6;
+      padding: 24px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-green { background: #22c55e; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-gray { background: #64748b; }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .summary-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .stat-card {
+      background: #1e2535;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+    }
+
+    .num-total { color: #60a5fa; }
+    .num-on-track { color: #22c55e; }
+    .num-off-track { color: #ef4444; }
+    .num-past-due { color: #f59e0b; }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #64748b;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e2535;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    .client-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .client-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #2d3748;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .card-header-left { flex: 1; min-width: 0; }
+
+    .client-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .client-team {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 3px;
+    }
+
+    .client-date {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .status-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .badge-on-track {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .badge-off-track {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-past-due {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .card-body {
+      padding: 16px 20px;
+    }
+
+    .task-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-section-label:first-child {
+      margin-top: 0;
+    }
+
+    .label-pending { color: #f59e0b; }
+    .label-complete { color: #22c55e; }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .task-item {
+      background: #0f1117;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    .task-item.complete-task {
+      opacity: 0.65;
+      border-color: #1e2535;
+    }
+
+    .task-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .task-name .tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+
+    .tag-ots {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .tag-onboarding {
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .tag-ogs {
+      background: rgba(20, 184, 166, 0.2);
+      color: #2dd4bf;
+      border: 1px solid rgba(20, 184, 166, 0.3);
+    }
+
+    .task-note {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 3px;
+      line-height: 1.4;
+      padding-left: 4px;
+    }
+
+    .check-icon { color: #22c55e; font-size: 0.7rem; }
+    .pending-icon { color: #f59e0b; font-size: 0.7rem; }
+
+    .section-group {
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+      header { padding: 16px; }
+      .container { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>OTS &amp; Onboarding Report</h1>
+  <p>March 24, 2026</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-green"></div> On Track</div>
+    <div class="legend-item"><div class="legend-dot dot-red"></div> Off Track</div>
+    <div class="legend-item"><div class="legend-dot dot-yellow"></div> Past Due / At Risk</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="summary-bar">
+    <div class="stat-card">
+      <div class="stat-num num-total">20</div>
+      <div class="stat-label">Total Clients</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num num-on-track">16</div>
+      <div class="stat-label">On Track</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num num-off-track">2</div>
+      <div class="stat-label">Off Track</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num num-past-due">2</div>
+      <div class="stat-label">Past Completion Date</div>
+    </div>
+  </div>
+
+  <!-- PAST DUE / OFF TRACK -->
+  <div class="section-group">
+    <div class="section-title">⚠ Past Completion Date / Off Track</div>
+    <div class="grid">
+
+      <!-- Schmid & Rhodes -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Schmid &amp; Rhodes</div>
+            <div class="client-team">Team: DP / Jason / Yordan</div>
+            <div class="client-date">📅 Completion: January 15, 2026</div>
+          </div>
+          <span class="status-badge badge-past-due">Past Due</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Last shoot day pushed to May — waiting on project completion</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Brand Standardization</div>
+            </li>
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ogs">OGS</span> Content Marketing</div>
+              <div class="task-note">Scheduled</div>
+            </li>
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Fortis Institute -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Fortis Institute</div>
+            <div class="client-team">Team: Sal / Jaden / Hayley / Kostadin</div>
+            <div class="client-date">📅 Completion: February 2, 2026</div>
+          </div>
+          <span class="status-badge badge-off-track">Off Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">David working on final design approval</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- D.A.S.H. -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">D.A.S.H.</div>
+            <div class="client-team">Team: Ellie / Emily / Kostadin</div>
+            <div class="client-date">📅 Completion: February 15, 2026</div>
+          </div>
+          <span class="status-badge badge-off-track">Off Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build + WH&amp;M</div>
+              <div class="task-note">Waiting on partner revisions</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ON TRACK -->
+  <div class="section-group">
+    <div class="section-title">✅ On Track</div>
+    <div class="grid">
+
+      <!-- G3 Ministries -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">G3 Ministries</div>
+            <div class="client-team">Team: Justin / Maggie</div>
+            <div class="client-date">📅 Completion: June 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> CRM Setup</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Meta Ads</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Baldwin Paving -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Baldwin Paving</div>
+            <div class="client-team">Team: Justin / Maggie / Yordan</div>
+            <div class="client-date">📅 Completion: April 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Development</div>
+              <div class="task-note">Finishing partner and SEO audits</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Deliverables in revision — lacking b-roll footage</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Sales Consultancy — Omni-Channel Dev &amp; CRM Setup</div>
+              <div class="task-note">On track, waiting on videos to finalize gifts</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Waiting on media deliverables to fully build out campaigns</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">QCP waiting on partner revisions</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Sales Support + Lead Generation</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- New Garden -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">New Garden</div>
+            <div class="client-team">Team: Will / Jaden / Yordan</div>
+            <div class="client-date">📅 Completion: April 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Development</div>
+              <div class="task-note">On track, waiting on final revisions</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Working through final revisions</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Sales Consultancy — CRM Build Out</div>
+              <div class="task-note">On track, last step is to connect forms once site goes live</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">On track to launch</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">QCP waiting on partner feedback</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Sales Support</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Concrete by Design -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Concrete by Design</div>
+            <div class="client-team">Team: Ellie / Emily / Yordan</div>
+            <div class="client-date">📅 Completion: May 4, 2026 &nbsp;·&nbsp; Start: 2/1</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Content upload this week</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Shoot completed, deliverables next week</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Access complete</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">LL only</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Smith & Davis -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Smith &amp; Davis</div>
+            <div class="client-team">Team: Sal / Hayley</div>
+            <div class="client-date">📅 Completion: May 4, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Shoot scheduled March 31 / April 1 — working through planning and casting</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Copy in SEO review</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Digital access complete</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">Blogs only</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Smith & Meadows -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Smith &amp; Meadows</div>
+            <div class="client-team">Team: Will / Jaden / Kostadin</div>
+            <div class="client-date">📅 Completion: May 4, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Shoot completed, edits next week</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Content upload this week</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Jaco Contracting Solutions -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Jaco Contracting Solutions</div>
+            <div class="client-team">Team: DP / Jason / Kostadin</div>
+            <div class="client-date">📅 Completion: May 15, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Development</div>
+              <div class="task-note">Working through final SEO revisions for copy before upload; Kostadin providing dev update</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Sales — Omni-Channel Dev + CRM Setup</div>
+              <div class="task-note">On track</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Harbinger DAS</div>
+              <div class="task-note">Re-allocating funds to lead gen</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Took over ads management + site hosting; waiting on Meta access to add page &amp; ad account to portfolio</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">Content plan presented this week — waiting on approval</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Sales</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Hoey Construction -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Hoey Construction</div>
+            <div class="client-team">Team: Justin / Maggie</div>
+            <div class="client-date">📅 Completion: June 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Waiting on website plan to be updated per initial feedback</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Initial planning phase — booked April 14–15</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> / <span class="tag tag-onboarding">Onboarding</span> Sales Consulting</div>
+              <div class="task-note">Initial kickoff meeting complete</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Waiting on initial access (call today) — need domain + Meta; can create other accounts if needed</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">Content plan approved</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Brand Standardization</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Estrada & Sons Landscape -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Estrada &amp; Sons Landscape</div>
+            <div class="client-team">Team: Ellie / Emily</div>
+            <div class="client-date">📅 Completion: June 15, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Reworking site per partner new direction</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ogs">OGS</span> Website Hosting &amp; Maintenance</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Brand Refresh</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- The Cummins Firm -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">The Cummins Firm</div>
+            <div class="client-team">Team: Sal / Haley</div>
+            <div class="client-date">📅 Completion: July 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Working through initial website plan creation and template selection</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Legacy Tow Group -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Legacy Tow Group</div>
+            <div class="client-team">Team: DP / Jason / Yordan</div>
+            <div class="client-date">📅 Completion: July 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Homepage developed — going live April 9</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Brand Standardization</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ERTH Products -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">ERTH Products</div>
+            <div class="client-team">Team: Will / Jaden</div>
+            <div class="client-date">📅 Completion: July 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding — EPI (Go-live: June 1, 2026)</div>
+              <div class="task-note">Concept revisions in process; Divot Dope revisions with partner for approval; ERTH concepts TBD after Divot Dope completion</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Presenting secondary pages tomorrow</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Initial shoot date scheduled for May</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> / <span class="tag tag-onboarding">Onboarding</span> CRM Setup</div>
+              <div class="task-note">Initial meeting complete</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Working through initial account creation</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">Content plan created — waiting on blog topics</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GES -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">GES</div>
+            <div class="client-team">Team: Justin / Maggie</div>
+            <div class="client-date">📅 Completion: July 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Sales Consulting</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Jimmy Nash Homes -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Jimmy Nash Homes</div>
+            <div class="client-team">Team: DP / Jason</div>
+            <div class="client-date">📅 Completion: August 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+              <div class="task-note">Waiting on DNS access to begin auditing site for updates</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production — Editing Only</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> / <span class="tag tag-onboarding">Onboarding</span> CRM Setup / Sales Support</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Working through campaign strategy</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">Content plan in creation</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mallory & Evans -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Mallory &amp; Evans</div>
+            <div class="client-team">Team: Anna / Sarah</div>
+            <div class="client-date">📅 Completion: August 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Korrect Plumbing, Heating & Air Conditioning Inc -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">Korrect Plumbing, Heating &amp; Air</div>
+            <div class="client-team">Team: DP / Jason</div>
+            <div class="client-date">📅 Completion: August 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Build / Improvements</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- First National Bank & Trust Co -->
+      <div class="client-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="client-name">First National Bank &amp; Trust Co</div>
+            <div class="client-team">Team: Anna / Sarah / Kostadin</div>
+            <div class="client-date">📅 Completion: September 1, 2026</div>
+          </div>
+          <span class="status-badge badge-on-track">On Track</span>
+        </div>
+        <div class="card-body">
+          <div class="task-section-label label-pending">⏳ Pending</div>
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Website Development</div>
+              <div class="task-note">Working on design changes and copywriting</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Media Production</div>
+              <div class="task-note">Scouting complete — shoot scheduled April 22 (4-day shoot)</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> / <span class="tag tag-onboarding">Onboarding</span> Sales</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Digital Marketing</div>
+              <div class="task-note">Access completed</div>
+            </li>
+            <li class="task-item">
+              <div class="task-name"><span class="tag tag-onboarding">Onboarding</span> Content Marketing</div>
+              <div class="task-note">Plan created</div>
+            </li>
+          </ul>
+          <div class="task-section-label label-complete">✅ Complete</div>
+          <ul class="task-list">
+            <li class="task-item complete-task">
+              <div class="task-name"><span class="tag tag-ots">OTS</span> Branding</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
